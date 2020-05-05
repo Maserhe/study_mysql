@@ -1,0 +1,120 @@
+Mysql 查询语句练习
+
+练习表格
+EMP表格
++-------+--------+-----------+------+------------+---------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL     | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+---------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1987-04-19 | 3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1987-05-23 | 1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |
++-------+--------+-----------+------+------------+---------+---------+--------+
+
+SALGRADE表格
++-------+-------+-------+
+| GRADE | LOSAL | HISAL |
++-------+-------+-------+
+|     1 |   700 |  1200 |
+|     2 |  1201 |  1400 |
+|     3 |  1401 |  2000 |
+|     4 |  2001 |  3000 |
+|     5 |  3001 |  9999 |
++-------+-------+-------+
+DEPT表格
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+
+1，取得每个部门最高薪水的人员名称
+
+SELECT E.ENAME , E.SAL , E.DEPTNO FROM EMP E
+    -> JOIN (SELECT MAX(SAL) AS SAL FROM EMP GROUP BY DEPTNO ) T
+    -> USING(SAL);
+2, 哪些人的薪水在部门的平均薪水之上
+ SELECT E.ENAME , E.SAL
+    -> FROM EMP E,
+    -> (SELECT AVG(SAL) AS SAL ,DEPTO FROM EMP GROUP BY DEPTNO) T
+    -> WHERE E.DEPTNO = T.DEPTNO AND E.SAL >= T.SAL;
+3, 取得部门中（所有人的）平均的薪水等级，
+ SELECT DEPTNO , AVG(GRADE)
+ FROM (SELECT * FROM EMP JOIN SALGRADE S ON EMP.SAL  BETWEEN S.LOSAL AND S.HISAL) T 
+ GROUP BY DEPTNO;
+4, 不准使用函数（Max),取得最高薪水
+mysql> SELECT SAL FROM EMP
+    -> WHERE SAL NOT IN
+    -> (SELECT A.SAL FROM EMP A, EMP B WHERE A.SAL < B.SAL);
+5, 取得平均薪水最高的部门编号
+
+    这一题我快烦死了，一直把 group by  写成 order by 怎么都没有找到错误，不过一次就长急性了。
+    最高的部门可能不止一个
+    SELECT DEPTNO , AVG(SAL) AS MAX
+    FROM EMP  GROUP BY DEPTNO
+    HAVING MA = (SELECT MAX(T.SAL) MAXSAL 
+                FROM (
+                    SELECT DEPTNO , AVG(SAL) SAL
+                    FROM EMP GROUP BY DEPTNO 
+                    ) T
+                );
+
+6. 取得平均薪水最高的部门的部门名称
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
